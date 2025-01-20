@@ -1,0 +1,39 @@
+# Python
+*.pyc
+*.pyo
+__pycache__/
+
+# Flask specific
+instance/
+.env/
+*.db
+
+# MySQL
+*.sql
+*.csv
+
+# Virtual environment
+venv/
+env/
+
+# VSCode settings
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Logs
+*.log
+
+# pytest
+.cache/
+
+# Coverage reports
+.coverage
+*.coveragerc
+
+# Jupyter Notebooks
+.ipynb_checkpoints/

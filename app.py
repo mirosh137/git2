@@ -5,13 +5,19 @@ import os
 
 app = Flask(__name__)
 
+
+def get_database_connection():
+    return mysql.connector.connect(
+        host=os.getenv("DATABASE_HOST", "localhost"),
+        user=os.getenv("DATABASE_USER", "root"),
+        password=os.getenv("DATABASE_PASSWORD", ""),
+        database=os.getenv("DATABASE_NAME", "gifs_db")
+    )
+
 def get_random_gif():
     """Fetch a random GIF URL from the database."""
-    conn = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="13478DanilaM_",
-        database="gifs_db"
+    conn = get_database_connection(
+        
     )
     cursor = conn.cursor()
 
@@ -70,4 +76,4 @@ if __name__ == "__main__":
     else:
         initialize_database()
 
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port = 5000)

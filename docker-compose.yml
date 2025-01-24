@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   flask-app:
-    build: .
+    image: mirosh137/flaskapp:1.0  # Use the correct image from Docker Hub
     ports:
       - "5000:5000"
     environment:

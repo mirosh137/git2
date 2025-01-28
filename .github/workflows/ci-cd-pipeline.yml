@@ -1,0 +1,49 @@
+name: CI Pipeline
+
+on:
+  schedule:
+    - cron: '*/2 * * * *'
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  ci_pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Build Docker image
+      run: docker-compose build
+
+    - name: Start Docker containers
+      run: docker-compose up -d
+
+    - name: Wait for application to start
+      run: sleep 10
+
+    - name: Test with curl
+      run: |
+        response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000)
+        if [ $response -eq 200 ]; then
+          echo "Application is running successfully"
+        else
+          echo "Application failed to start"
+          exit 1
+        fi
+
+    - name: Stop Docker containers
+      run: docker-compose down

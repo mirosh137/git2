@@ -1,8 +1,8 @@
-name: Flask App CI Pipeline
+name: Flask App CI/CD Pipeline
 
 on:
   schedule:
-    - cron: "*/2 * * * *"  # Run the pipeline every 2 minutes
+    - cron: "*/2 * * * *"  # Run every 2 minutes
   push:
     branches:
       - master
@@ -49,3 +49,15 @@ jobs:
         docker stop test-flask-app || true
         docker rm test-flask-app || true
         docker rmi -f mirosh137/flaskapp:latest mirosh137/flaskapp:1.0 || true
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker pull mirosh137/flaskapp:latest
+          docker stop flaskapp || true
+          docker rm flaskapp || true
+          docker run -d -p 80:5000 --name flaskapp mirosh137/flaskapp:latest

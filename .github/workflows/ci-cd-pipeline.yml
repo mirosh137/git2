@@ -44,20 +44,32 @@ jobs:
         docker push mirosh137/flaskapp:1.0
         docker push mirosh137/flaskapp:latest
 
-    - name: Cleanup Docker Images
-      run: |
-        docker stop test-flask-app || true
-        docker rm test-flask-app || true
-        docker rmi -f mirosh137/flaskapp:latest mirosh137/flaskapp:1.0 || true
+    - name: Copy Docker Compose file to EC2
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        source: "docker-compose.yml"
+        target: "~/flaskapp/"
 
-    - name: Deploy to EC2
+    - name: Deploy to EC2 with Docker Compose
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
+          cd ~/flaskapp  # Navigate to the app directory
+          
+          # Stop and remove existing containers
+          docker-compose down || true
+
+          # Pull the latest Docker image
           docker pull mirosh137/flaskapp:latest
-          docker stop flaskapp || true
-          docker rm flaskapp || true
-          docker run -d -p 80:5000 --name flaskapp mirosh137/flaskapp:latest
+
+          # Start the application using Docker Compose
+          docker-compose up -d --force-recreate --remove-orphans
+
+          # Cleanup old Docker images
+          docker image prune -af

@@ -27,5 +27,9 @@ services:
       - mysql_data:/var/lib/mysql
       - ./gifdb.sql:/docker-entrypoint-initdb.d/gifdb.sql
 
+networks:
+  flaskapp-network:
+    driver: bridge  # Create a custom bridge network
+
 volumes:
   mysql_data:

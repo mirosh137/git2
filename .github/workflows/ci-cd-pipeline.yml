@@ -46,7 +46,7 @@ jobs:
         INSTANCE_ID=$(aws ec2 run-instances --image-id ami-032ae1bccc5be78ca \
           --instance-type t2.micro \
           --key-name my-key-pair \
-          --security-groups my-security-group \
+          --security-groups sg-0b4752d0d8d939260 \  # Updated security group
           --query 'Instances[0].InstanceId' \
           --output text)
 
@@ -113,3 +113,4 @@ jobs:
           docker-compose up -d --force-recreate --remove-orphans
 
           docker image prune -af
+

@@ -43,11 +43,10 @@ jobs:
     - name: Create EC2 Instance
       id: create-ec2
       run: |
-        INSTANCE_ID=$(aws ec2 run-instances \
-          --image-id ami-0c55b159cbfafe1f0 \  # Change to your preferred AMI
+        INSTANCE_ID=$(aws ec2 run-instances --image-id ami-0c55b159cbfafe1f0 \
           --instance-type t2.micro \
-          --key-name my-key-pair \  # Change to your EC2 key pair
-          --security-groups my-security-group \  # Ensure this allows SSH (port 22) and app traffic
+          --key-name my-key-pair \
+          --security-groups my-security-group \
           --query 'Instances[0].InstanceId' \
           --output text)
 

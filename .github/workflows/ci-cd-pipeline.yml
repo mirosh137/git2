@@ -43,14 +43,11 @@ jobs:
     - name: Create EC2 Instance
       id: create-ec2
       run: |
-        # Debugging Step: Check if the security group ID is valid
-        aws ec2 describe-security-groups --group-ids sg-0b4752d0d8d939260
-        
-        # Create EC2 Instance
-        INSTANCE_ID=$(aws ec2 run-instances --image-id ami-032ae1bccc5be78ca \
+        INSTANCE_ID=$(aws ec2 run-instances \
+          --image-id ami-032ae1bccc5be78ca \
           --instance-type t2.micro \
           --key-name MyDynamicKey \
-          --security-group-ids sg-0b4752d0d8d939260 \  # Correct security group ID format
+          --security-group-ids sg-0b4752d0d8d939260 \
           --query 'Instances[0].InstanceId' \
           --output text)
 

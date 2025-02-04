@@ -43,7 +43,7 @@ jobs:
     - name: Create EC2 Instance
       id: create-ec2
       run: |
-        INSTANCE_ID=$(aws ec2 run-instances --image-id ami-0c55b159cbfafe1f0 \
+        INSTANCE_ID=$(aws ec2 run-instances --image-id ami-032ae1bccc5be78ca \
           --instance-type t2.micro \
           --key-name my-key-pair \
           --security-groups my-security-group \

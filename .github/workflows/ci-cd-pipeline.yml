@@ -101,27 +101,28 @@ jobs:
         username: ec2-user
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          script: |
-          # Kill any running yum process
-          sudo rm -f /var/run/yum.pid
-          sudo yum clean all
-          sudo yum update -y
-          sudo yum install -y docker
+            # Kill any running yum process
+            sudo rm -f /var/run/yum.pid
+            sudo yum clean all
+            sudo yum update -y
+            sudo yum install -y docker
 
-          # Start and enable Docker
-          sudo systemctl enable docker
-          sudo systemctl start docker
-          sudo usermod -aG docker ec2-user
-          sudo systemctl restart docker
+            # Start and enable Docker
+            sudo systemctl enable docker
+            sudo systemctl start docker
+            sudo usermod -aG docker ec2-user
+            sudo systemctl restart docker
 
-          # Install Docker Compose if missing
-          if ! command -v docker-compose &> /dev/null; then
-            sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            sudo chmod +x /usr/local/bin/docker-compose
-          fi
+            # Apply Docker group changes
+            newgrp docker
 
-          cd ~/flaskapp
-          docker-compose down || true
-          docker pull mirosh137/flaskapp:latest
-          docker-compose up -d --force-recreate --remove-orphans
-          docker image prune -af
+            # Install Docker Compose if missing
+            if ! command -v docker-compose &> /dev/null; then
+              sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+            fi
+
+            sudo docker-compose down || true
+            sudo docker pull mirosh137/flaskapp:latest
+            sudo docker-compose up -d --force-recreate --remove-orphans
+            sudo docker image prune -af

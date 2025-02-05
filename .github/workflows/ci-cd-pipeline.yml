@@ -101,6 +101,10 @@ jobs:
         username: ec2-user
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
+          script: |
+          # Kill any running yum process
+          sudo rm -f /var/run/yum.pid
+          sudo yum clean all
           sudo yum update -y
           sudo yum install -y docker
 

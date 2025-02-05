@@ -91,7 +91,7 @@ jobs:
         host: ${{ env.EC2_HOST }}
         username: ec2-user
         key: ${{ secrets.EC2_SSH_KEY }}  # Use the SSH private key stored in GitHub Secrets
-        source: "docker-compose.yml"
+        source: "*"
         target: "~/flaskapp/"
 
     - name: Deploy to EC2 with Docker Compose

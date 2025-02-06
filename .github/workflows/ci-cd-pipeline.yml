@@ -94,7 +94,7 @@ jobs:
         source: "*"
         target: "~/flaskapp/"
 
-    - name: Deploy to EC2 with Docker Compose
+        - name: Deploy to EC2 with Docker Compose
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ env.EC2_HOST }}
@@ -122,7 +122,18 @@ jobs:
               sudo chmod +x /usr/local/bin/docker-compose
             fi
 
+            # Change to the correct directory
+            cd ~/flaskapp
+
+            # Stop existing containers
             sudo docker-compose down || true
+
+            # Pull latest image
             sudo docker pull mirosh137/flaskapp:latest
+
+            # Start containers
             sudo docker-compose up -d --force-recreate --remove-orphans
+
+            # Remove unused images
             sudo docker image prune -af
+

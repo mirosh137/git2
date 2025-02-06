@@ -122,18 +122,25 @@ jobs:
               sudo chmod +x /usr/local/bin/docker-compose
             fi
 
-            # Change to the correct directory
-            cd ~/flaskapp
+            # Ensure we are inside the correct directory
+            cd ~/flaskapp || exit 1
 
-            # Stop existing containers
+            # Verify the presence of docker-compose.yml
+            if [ ! -f docker-compose.yml ]; then
+              echo "Error: docker-compose.yml not found in ~/flaskapp"
+              exit 1
+            fi
+
+            # Stop any running containers
             sudo docker-compose down || true
 
-            # Pull latest image
+            # Pull latest Docker image
             sudo docker pull mirosh137/flaskapp:latest
 
-            # Start containers
-            sudo docker-compose up -d --force-recreate --remove-orphans
+            # Run Docker Compose with full path reference
+            sudo /usr/local/bin/docker-compose up -d --force-recreate --remove-orphans
 
-            # Remove unused images
+            # Clean up unused images
             sudo docker image prune -af
+
 

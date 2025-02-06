@@ -94,7 +94,7 @@ jobs:
         source: "*"
         target: "~/flaskapp/"
 
-        - name: Deploy to EC2 with Docker Compose
+    - name: Deploy to EC2 with Docker Compose
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ env.EC2_HOST }}

@@ -37,3 +37,12 @@ Thumbs.db
 
 # Jupyter Notebooks
 .ipynb_checkpoints/
+
+# Terraform-related files
+terraform.tfstate
+terraform.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# Ignore Terraform deployment directory
+terraform-deploy/

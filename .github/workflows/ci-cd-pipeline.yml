@@ -1,8 +1,6 @@
 name: Flask App CI/CD Pipeline
 
 on:
-  schedule:
-    - cron: "*/2 * * * *"  # Run every 2 minutes
   push:
     branches:
       - master

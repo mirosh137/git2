@@ -5,6 +5,7 @@ on:
     workflows: ["Flask App CI/CD Pipeline"]
     types:
       - completed
+  workflow_dispatch:
 
 permissions:
   actions: read

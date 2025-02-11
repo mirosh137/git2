@@ -12,6 +12,7 @@ on:
 
 jobs:
   build-and-deploy:
+    if: github.event_name != 'workflow_run'
     runs-on: ubuntu-latest
 
     steps:
@@ -142,5 +143,3 @@ jobs:
 
             # Clean up unused images
             sudo docker image prune -af
-
-

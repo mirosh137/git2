@@ -1,16 +1,6 @@
 // variables.tf
 
-variable "aws_access_key" {
-  description = "AWS Access Key"
-  type        = string
-  
-}
 
-variable "aws_secret_key" {
-  description = "AWS Secret Access Key"
-  type        = string
-  
-}
 
 variable "ami_id" {
   description = "AMI ID for the EC2 instances (Ubuntu, etc.)"

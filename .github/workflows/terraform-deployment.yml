@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+     
+      - name: List Repository Files
+        run: ls -R
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2

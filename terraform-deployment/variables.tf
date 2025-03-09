@@ -1,40 +1,24 @@
-// variables.tf
-
-
-
-variable "ami_id" {
-  description = "AMI ID for the EC2 instances (Ubuntu, etc.)"
-  type        = string
-  default     = "ami-032ae1bccc5be78ca"
+variable "credentials_file" {
+  default = "C:/Users/danik/Downloads/my-gke-project-451415-e4339559a5f8.json"
 }
 
-variable "ssh_key_name" {
-  description = "Name of the SSH key pair for EC2 instances"
+variable "region" {
+  description = "The GCP region where resources will be deployed"
   type        = string
-  default     = "MyDynamicKey"
+  default     = "us-central1"
 }
 
-variable "vpc_id" {
-  description = "VPC ID where the instances will be deployed"
+variable "zone" {
+  description = "The GCP zone for Compute instances"
   type        = string
-  default     = "vpc-06537dc8a299b877c"
+  default     = "us-central1-a"
 }
 
-variable "security_group_id" {
-  description = "Existing Security Group ID to attach to the EC2 instances"
-  type        = string
-  default     = "sg-0c9ee9ee2981a85e7"
-}
 
 variable "github_repo_url" {
-  description = "GitHub repository URL for the application"
+  description = "GitHub repository URL for CI/CD setup (not used in GKE cluster creation)"
   type        = string
   default     = "https://github.com/mirosh137/git2.git"
 }
 
-variable "instance_type" {
-  description = "EC2 instance type to use"
-  type        = string
-  default     = "t2.micro"
-}
 

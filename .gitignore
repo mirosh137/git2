@@ -1,18 +1,18 @@
-# Python
+# Python compiled files
 *.pyc
 *.pyo
 __pycache__/
 
-# Flask specific
+# Flask-specific files
 instance/
-.env/
+.env
 *.db
 
 # MySQL
 *.sql
 *.csv
 
-# Virtual environment
+# Virtual Environment
 venv/
 env/
 
@@ -28,7 +28,7 @@ Thumbs.db
 # Logs
 *.log
 
-# pytest
+# pytest cache
 .cache/
 
 # Coverage reports
@@ -45,4 +45,22 @@ terraform.tfstate.backup
 .terraform.lock.hcl
 
 # Ignore Terraform deployment directory
-terraform-deploy/
+terraform-deployment/.terraform/
+terraform-deployment/*.tfstate*
+terraform-deployment/terraform.tfstate.backup
+
+# Ignore Helm Chart temporary files (but keep the chart itself)
+flaskapp-chart/charts/
+flaskapp-chart/.helmignore
+flaskapp-chart/*.tgz  # Ignore if Helm packages the chart
+
+# Ignore environment variables & secret files
+.env
+.env.*
+env/
+secrets.yaml
+secrets.yml
+
+# Ignore Docker-related files
+docker-compose.override.yml
+*.log

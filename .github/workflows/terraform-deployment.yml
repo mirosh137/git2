@@ -42,14 +42,20 @@ jobs:
       - name: Initialize Terraform
         run: terraform init
         working-directory: terraform-deployment
+        env:
+          TF_VAR_gcp_credentials: ${{ secrets.GCP_SA_KEY }}
 
       - name: Plan Terraform Changes
         run: terraform plan -out=tfplan
         working-directory: terraform-deployment
+        env:
+          TF_VAR_gcp_credentials: ${{ secrets.GCP_SA_KEY }}
 
       - name: Apply Terraform Changes
         run: terraform apply -auto-approve tfplan
         working-directory: terraform-deployment
+        env:
+          TF_VAR_gcp_credentials: ${{ secrets.GCP_SA_KEY }}
 
   deploy:
     name: Deploy to GKE with Helm

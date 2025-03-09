@@ -8,10 +8,9 @@ terraform {
 }
 
 provider "google" {
+  credentials = var.gcp_credentials
   project     = "my-new-gke-project-452612"
-  region      = "us-central1"
+  region      = "us-central1-a"
   zone        = "us-central1-a"
-  credentials = file("C:\\Users\\danik\\my-new-gke-project-452612-ceb1f0c738c4.json")
 }
-
 

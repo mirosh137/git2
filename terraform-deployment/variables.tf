@@ -1,5 +1,6 @@
-variable "credentials_file" {
-  default = "C:/Users/danik/Downloads/my-gke-project-451415-e4339559a5f8.json"
+variable "gcp_credentials" {
+  description = "GCP service account credentials"
+  type        = string
 }
 
 variable "region" {

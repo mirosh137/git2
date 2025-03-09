@@ -75,6 +75,11 @@ jobs:
         with:
           project_id: ${{ env.PROJECT_ID }}
 
+      - name: Install GKE Auth Plugin for kubectl
+        run: |
+          gcloud components install gke-gcloud-auth-plugin
+          echo "export USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
+
       - name: Get GKE Cluster Credentials
         run: gcloud container clusters get-credentials $GKE_CLUSTER --region $GKE_REGION
 
@@ -88,4 +93,5 @@ jobs:
           helm upgrade --install flaskapp-release ./flaskapp-chart --namespace default \
             --set image.repository=${{ secrets.GCR_HOSTNAME }}/my-new-gke-project-452612/flaskapp-repo/flaskapp \
             --set image.tag=latest
+
         

@@ -5,7 +5,7 @@ on:
     branches:
       - master
   pull_request:
-    branches:
+      branches:
       - master
 
 jobs:
@@ -141,3 +141,31 @@ jobs:
 
             # Clean up unused images
             sudo docker image prune -af
+
+  gcp-auth-and-push:
+    name: Authenticate with GCP & Push to GCR
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Authenticate with Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set Up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: my-new-gke-project-452612
+
+    - name: Authenticate Docker to GCR
+      run: gcloud auth configure-docker
+
+    - name: Pull Image from Docker Hub and Push to GCR
+      run: |
+        docker pull mirosh137/flaskapp:latest
+        docker tag mirosh137/flaskapp:latest gcr.io/my-new-gke-project-452612/flaskapp:latest
+        docker push gcr.io/my-new-gke-project-452612/flaskapp:latest

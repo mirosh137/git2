@@ -88,10 +88,13 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
           helm version
 
+      - name: Authenticate Helm with Artifact Registry
+        run: |
+          export HELM_EXPERIMENTAL_OCI=1
+          helm registry login -u oauth2accesstoken -p "$(gcloud auth print-access-token)" us-central1-docker.pkg.dev
+
       - name: Deploy to GKE Using Helm
         run: |
-          helm upgrade --install flaskapp-release ./flaskapp-chart --namespace default \
-            --set image.repository=${{ secrets.GCR_HOSTNAME }}/my-new-gke-project-452612/flaskapp \
+          helm upgrade --install flaskapp-release oci://us-central1-docker.pkg.dev/my-new-gke-project-452612/flaskapp-helm-repo/flaskapp-chart --version 0.1.0 --namespace default \
+            --set image.repository=us-central1-docker.pkg.dev/my-new-gke-project-452612/flaskapp/flaskapp \
             --set image.tag=latest
-
-        

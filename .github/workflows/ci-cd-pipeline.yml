@@ -164,10 +164,6 @@ jobs:
     - name: Authenticate Docker to Artifact Registry (GCR)
       run: gcloud auth configure-docker us-central1-docker.pkg.dev
 
-    - name: Check Service Account
-      run: |
-        echo ${{ secrets.GCP_SA_KEY }} | base64 --decode | jq .client_email
-
 
     - name: Pull Image from Docker Hub and Push to GCR
       run: |

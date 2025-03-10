@@ -161,11 +161,15 @@ jobs:
       with:
         project_id: my-new-gke-project-452612
 
-    - name: Authenticate Docker to GCR
-      run: gcloud auth configure-docker
+    - name: Authenticate Docker to Artifact Registry (GCR)
+      run: gcloud auth configure-docker ${{ secrets.GCR_HOSTNAME }}
 
     - name: Pull Image from Docker Hub and Push to GCR
       run: |
         docker pull mirosh137/flaskapp:latest
-        docker tag mirosh137/flaskapp:latest gcr.io/my-new-gke-project-452612/flaskapp:latest
-        docker push gcr.io/my-new-gke-project-452612/flaskapp:latest
+        docker tag mirosh137/flaskapp:latest ${{ secrets.GCR_HOSTNAME }}/my-new-gke-project-452612/flaskapp/flaskapp:latest
+        docker push ${{ secrets.GCR_HOSTNAME }}/my-new-gke-project-452612/flaskapp/flaskapp:latest
+
+
+
+

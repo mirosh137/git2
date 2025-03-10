@@ -91,7 +91,7 @@ jobs:
       - name: Deploy to GKE Using Helm
         run: |
           helm upgrade --install flaskapp-release ./flaskapp-chart --namespace default \
-            --set image.repository=${{ secrets.GCR_HOSTNAME }}/my-new-gke-project-452612/flaskapp-repo/flaskapp \
+            --set image.repository=${{ secrets.GCR_HOSTNAME }}/my-new-gke-project-452612/flaskapp \
             --set image.tag=latest
 
         

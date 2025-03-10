@@ -164,11 +164,17 @@ jobs:
     - name: Authenticate Docker to Artifact Registry (GCR)
       run: gcloud auth configure-docker us-central1-docker.pkg.dev
 
+    - name: Check Service Account
+      run: |
+        echo ${{ secrets.GCP_SA_KEY }} | base64 --decode | jq .client_email
+
+
     - name: Pull Image from Docker Hub and Push to GCR
       run: |
         docker pull mirosh137/flaskapp:latest
-        docker tag mirosh137/flaskapp:latest us-central1-docker.pkg.dev/my-new-gke-project-452612/flaskapp:latest
-        docker push us-central1-docker.pkg.dev/my-new-gke-project-452612/flaskapp:latest
+        docker tag mirosh137/flaskapp:latest us-central1-docker.pkg.dev/my-new-gke-project-452612/flaskapp/flaskapp:latest
+        docker push us-central1-docker.pkg.dev/my-new-gke-project-452612/flaskapp/flaskapp:latest
+
 
 
 

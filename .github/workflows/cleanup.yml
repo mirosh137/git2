@@ -1,0 +1,93 @@
+name: Cleanup and Termination
+
+on:
+  workflow_dispatch:  # Manually triggered
+
+jobs:
+  shutdown-ec2:
+    name: Stop Containers & Terminate EC2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get EC2 Instance ID
+        id: get-instance
+        run: |
+          INSTANCE_ID=$(aws ec2 describe-instances \
+            --filters "Name=instance-state-name,Values=running" \
+            --query "Reservations[*].Instances[*].InstanceId" \
+            --output text)
+          echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1  # Change if needed
+
+      - name: Stop Running Containers on EC2
+        if: env.INSTANCE_ID != ''
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Stopping running containers..."
+            sudo docker-compose down
+            sudo docker container prune -f
+            sudo docker image prune -af
+            sudo systemctl stop docker
+
+      - name: Terminate EC2 Instance
+        if: env.INSTANCE_ID != ''
+        run: |
+          echo "Terminating EC2 instance..."
+          aws ec2 terminate-instances --instance-ids $INSTANCE_ID
+          aws ec2 wait instance-terminated --instance-ids $INSTANCE_ID
+          echo "EC2 instance terminated successfully."
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+
+  terraform-destroy:
+    name: Destroy GKE & Resources
+    needs: shutdown-ec2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set Up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: my-new-gke-project-452612
+
+      - name: Get GKE Cluster Credentials
+        run: gcloud container clusters get-credentials my-gke-cluster --region us-central1-a
+
+      - name: Uninstall Helm Release (Optional)
+        run: |
+          helm list -n default
+          if helm status flaskapp-release -n default; then
+            helm uninstall flaskapp-release -n default
+            echo "Helm release uninstalled successfully."
+          else
+            echo "No Helm release found."
+          fi
+        continue-on-error: true
+
+      - name: Set Up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3.0
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: terraform-deployment
+
+      - name: Destroy Infrastructure with Terraform
+        run: terraform destroy -auto-approve
+        working-directory: terraform-deployment

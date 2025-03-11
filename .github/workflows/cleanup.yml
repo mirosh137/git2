@@ -14,8 +14,20 @@ jobs:
           INSTANCE_ID=$(aws ec2 describe-instances \
             --filters "Name=instance-state-name,Values=running" \
             --query "Reservations[*].Instances[*].InstanceId" \
-            --output text)
+            --output text | awk '{print $1}')  # Ensure only one ID is selected
+
+          if [[ -z "$INSTANCE_ID" ]]; then
+            echo "No running EC2 instances found!"
+            exit 1
+          fi
+
           echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
+        shell: bash
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
